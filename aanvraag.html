@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Roblox Game Aanvraag</title>
+
   <!-- Favicon & app icons -->
-  <link rel="icon" type="image/png" href="favicon.png" sizes="256x256">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  favicon.png
+  apple-touch-icon.png
   <meta name="theme-color" content="#0f0c29" />
 
   <style>
@@ -15,21 +16,30 @@
       --accent:#22d3ee; --accent2:#8b5cf6; --danger:#ef4444;
     }
     *{ box-sizing:border-box; }
-    body{ margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: radial-gradient(1200px 800px at 10% 0%, #0a0f1f, #030712 60%), var(--bg); color: var(--text); min-height:100vh; display:flex; flex-direction:column; }
+    body{
+      margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 10% 0%, #0a0f1f, #030712 60%), var(--bg);
+      color: var(--text); min-height:100vh; display:flex; flex-direction:column;
+    }
     header{ border-bottom:1px solid var(--border); background:rgba(17,24,39,.7); backdrop-filter: blur(6px); }
     .container{ width:min(1200px, 94vw); margin:0 auto; padding:1rem 0; }
     .brand{ display:flex; align-items:center; gap:.75rem; }
     .logo{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; font-weight:900; background:conic-gradient(from 210deg, var(--accent), var(--accent2), var(--accent)); color:#0b1020; box-shadow:0 0 20px rgba(34,211,238,.35); }
     nav{ display:flex; align-items:center; gap:.75rem; }
     .spacer{ flex:1; }
-    .btn{ appearance:none; border:1px solid var(--border); color:var(--text); background: linear-gradient(180deg, #0d1324, #0a0f1f); padding:.55rem .8rem; border-radius:10px; cursor:pointer; transition:.15s; font-weight:600; }
+    .btn{
+      appearance:none; border:1px solid var(--border); color:var(--text);
+      background: linear-gradient(180deg, #0d1324, #0a0f1f); padding:.55rem .8rem; border-radius:10px; cursor:pointer; transition:.15s;
+      font-weight:600;
+    }
     .btn:hover{ border-color:#2a3648; box-shadow:0 0 0 3px rgba(139,92,246,.12); transform: translateY(-1px); }
     .btn.small{ font-size:.9rem; padding:.45rem .6rem; }
     .btn.danger{ border-color:#7f1d1d; color:#fecaca; }
     .grid{ display:grid; gap:1.25rem; grid-template-columns:1fr; }
-    @media (min-width: 1100px){ .grid{ grid-template-columns: 420px 1fr; } }
+    @media (min-width:1100px){ .grid{ grid-template-columns: 420px 1fr; } }
     .card{ background: linear-gradient(180deg, #0a0f1f, #0b1220); border:1px solid var(--border); border-radius:16px; padding:1rem; box-shadow:0 8px 30px rgba(0,0,0,.25); }
     .muted{ color:var(--muted); }
+    .subtle{ font-size:.85rem; color:#9ca3af; }
     .field{ display:grid; gap:.35rem; margin-bottom:.7rem; }
     input,select,textarea{ width:100%; background:#0a1020; color:var(--text); border:1px solid #1b2434; border-radius:10px; padding:.6rem .7rem; outline:none; }
     input:focus,select:focus,textarea:focus{ border-color:#2a3a55; box-shadow:0 0 0 3px rgba(34,211,238,.12); }
@@ -45,7 +55,6 @@
     tr:hover td{ background:#0b1120; }
     .empty{ border:1px dashed #233049; border-radius:12px; padding:.9rem; color:var(--muted); text-align:center; background: repeating-linear-gradient(45deg, #091126, #091126 10px, #0a152e 10px, #0a152e 20px); }
     footer{ color:var(--muted); font-size:.9rem; text-align:center; padding:14px 10px; }
-    .subtle{ font-size:.85rem; color:#9ca3af; }
   </style>
 </head>
 <body>
@@ -61,14 +70,15 @@
       <div class="spacer"></div>
       <nav>
         <span id="currentUserInfo" class="muted"></span>
-        <button id="toIndexBtn" class="btn small">🏠 Start</button>
-        <button id="logoutBtn" class="btn small">Afmelden</button>
+        <button id="toIndexBtn" type="button" class="btn small">🏠 Start</button>
+        <button id="logoutBtn" type="button" class="btn small">Afmelden</button>
       </nav>
     </div>
   </header>
 
   <main class="container">
     <div class="grid">
+      <!-- Aanvraag indienen -->
       <div class="card">
         <h3>Nieuw verzoek indienen</h3>
         <p class="muted">Beschrijf jouw Roblox game‑idee zo duidelijk mogelijk.</p>
@@ -99,15 +109,17 @@
           <label for="reqAssets">Links naar assets (optioneel)</label>
           <input id="reqAssets" type="text" placeholder="Trello/GDrive, modellen, audio…" />
         </div>
-        <div><button id="submitRequestBtn" class="btn">Verzoek indienen</button></div>
+        <div><button id="submitRequestBtn" type="button" class="btn">Verzoek indienen</button></div>
         <p class="muted" style="margin-top:.6rem;">Statussen: <span class="status pending">In afwachting</span> → <span class="status progress">In behandeling</span> → <span class="status accepted">Geaccepteerd</span> / <span class="status rejected">Geweigerd</span></p>
       </div>
 
+      <!-- Lijst -->
       <div class="card">
         <h3 id="listTitle">Mijn verzoeken</h3>
         <div id="requestsList"></div>
       </div>
 
+      <!-- Owner/Dev Panel -->
       <div id="ownerPanel" class="card" style="display:none;">
         <h3>👑 Owner/Dev Panel – Gebruikersbeheer</h3>
         <p class="subtle">Alleen zichtbaar voor de owner. Beheer rollen, e‑mail en reset wachtwoorden.</p>
@@ -121,76 +133,195 @@
   </footer>
 
   <script>
-    // ---------- Helpers & storage ----------
+    /* =========================
+       Helpers & storage
+    ==========================*/
     const usersKey = 'users';
     const reqKey = 'requests';
     const currentUserKey = 'currentUser';
-
     const $ = s => document.querySelector(s);
 
     function fmtDate(iso){ const d = new Date(iso); return d.toLocaleString(); }
     function getRequests(){ try { return JSON.parse(localStorage.getItem(reqKey) || '[]'); } catch { return []; } }
     function saveRequests(list){ localStorage.setItem(reqKey, JSON.stringify(list)); }
+
     function getUsers(){ try { return JSON.parse(localStorage.getItem(usersKey) || '[]'); } catch { return []; } }
     function saveUsers(list){ localStorage.setItem(usersKey, JSON.stringify(list)); }
+
     function getCurrentUser(){ return localStorage.getItem(currentUserKey) || ''; }
     function setCurrentUser(u){ localStorage.setItem(currentUserKey, u || ''); }
+
     function isOwner(u){ return u && u.toLowerCase() === 'bloempitbull'; }
 
     function uid(){ return 'id_'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
     function escapeHtml(str){
-      return String(str).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;");
+      return String(str)
+        .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+        .replaceAll('"','&quot;').replaceAll("'",'&#039;');
     }
-    function linkify(text){ const urlRegex = /(https?:\/\/[^\s]+)/g; return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`); }
+    function linkify(text){
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, url => `${url}${url}</a>`);
+    }
 
-    // ---------- Auth check ----------
+    /* =========================
+       Auth guard
+    ==========================*/
     function requireLogin(){
       const u = getCurrentUser();
-      if(!u){ alert('Log eerst in op de startpagina.'); window.location.href = 'index.html'; return false; }
+      if(!u){
+        alert('Log eerst in op de startpagina.');
+        window.location.href = 'index.html';
+        return false;
+      }
       return true;
     }
 
-    // ---------- Requests ----------
-    function collectForm(){ return { title: $('#reqTitle').value.trim(), genre: $('#reqGenre').value, priority: $('#reqPriority').value, description: $('#reqDesc').value.trim(), assets: $('#reqAssets').value.trim(), }; }
-    function clearForm(){ $('#reqTitle').value=''; $('#reqGenre').value=''; $('#reqPriority').value='Normaal'; $('#reqDesc').value=''; $('#reqAssets').value=''; }
-    function validate(data){ const e=[]; if(!data.title) e.push('Titel is verplicht.'); if(!data.genre) e.push('Genre is verplicht.'); if(!data.description) e.push('Beschrijving is verplicht.'); return e; }
-    function submitRequest(){ const u=getCurrentUser(); if(!u) return; const data=collectForm(); const errs=validate(data); if(errs.length){ alert(errs.join('
-')); return;} const list=getRequests(); list.push({ id:uid(), user:u, title:data.title, genre:data.genre, priority:data.priority, description:data.description, assets:data.assets, status:'pending', createdAt:new Date().toISOString(), updatedAt:new Date().toISOString() }); saveRequests(list); clearForm(); render(); alert('Verzoek ingediend!'); }
-    function changeStatus(id, status){ const u=getCurrentUser(); if(!isOwner(u)){ alert('Alleen owner kan statussen wijzigen.'); return;} const list=getRequests(); const i=list.findIndex(x=>x.id===id); if(i>=0){ list[i].status=status; list[i].updatedAt=new Date().toISOString(); saveRequests(list); render(); } }
+    /* =========================
+       Requests (CRUD in localStorage)
+    ==========================*/
+    function collectForm(){
+      return {
+        title: $('#reqTitle').value.trim(),
+        genre: $('#reqGenre').value,
+        priority: $('#reqPriority').value,
+        description: $('#reqDesc').value.trim(),
+        assets: $('#reqAssets').value.trim(),
+      };
+    }
+    function clearForm(){
+      $('#reqTitle').value=''; $('#reqGenre').value='';
+      $('#reqPriority').value='Normaal'; $('#reqDesc').value=''; $('#reqAssets').value='';
+    }
+    function validate(data){
+      const e = [];
+      if(!data.title) e.push('Titel is verplicht.');
+      if(!data.genre) e.push('Genre is verplicht.');
+      if(!data.description) e.push('Beschrijving is verplicht.');
+      return e;
+    }
+    function submitRequest(){
+      const u = getCurrentUser();
+      if(!u) return;
+      const data = collectForm();
+      const errs = validate(data);
+      if(errs.length){ alert(errs.join('\n')); return; }
+      const list = getRequests();
+      list.push({
+        id: uid(),
+        user: u,
+        title: data.title,
+        genre: data.genre,
+        priority: data.priority,
+        description: data.description,
+        assets: data.assets,
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      saveRequests(list);
+      clearForm();
+      render();
+      alert('Verzoek ingediend!');
+    }
+    function changeStatus(id, status){
+      const u = getCurrentUser();
+      if(!isOwner(u)){ alert('Alleen owner kan statussen wijzigen.'); return; }
+      const list = getRequests();
+      const i = list.findIndex(x => x.id === id);
+      if(i>=0){
+        list[i].status = status;
+        list[i].updatedAt = new Date().toISOString();
+        saveRequests(list);
+        render();
+      }
+    }
+    function statusPill(s){
+      const map = { pending:['pending','In afwachting'], progress:['progress','In behandeling'], accepted:['accepted','Geaccepteerd'], rejected:['rejected','Geweigerd'] };
+      const [cls,txt] = map[s] || map.pending;
+      return `<span class="status ${cls}">${txt}</span>`;
+    }
+    function renderRequests(){
+      const u = getCurrentUser();
+      const owner = isOwner(u);
+      const list = getRequests().sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+      const mine = owner ? list : list.filter(x => x.user === u);
+      $('#listTitle').textContent = owner ? 'Alle verzoeken (owner)' : 'Mijn verzoeken';
 
-    function statusPill(s){ const map={ pending:['pending','In afwachting'], progress:['progress','In behandeling'], accepted:['accepted','Geaccepteerd'], rejected:['rejected','Geweigerd'] }; const [cls,txt]=map[s]||map.pending; return `<span class="status ${cls}">${txt}</span>`; }
-
-    function renderRequests(){ const u=getCurrentUser(); const owner=isOwner(u); const list=getRequests().sort((a,b)=> new Date(b.createdAt)-new Date(a.createdAt)); const mine= owner? list : list.filter(x=>x.user===u); document.getElementById('listTitle').textContent = owner? 'Alle verzoeken (owner)' : 'Mijn verzoeken'; const holder=document.getElementById('requestsList'); holder.innerHTML=''; if(mine.length===0){ holder.innerHTML = `<div class="empty">Nog geen verzoeken ${owner? 'van gebruikers':'van jou'}.</div>`; return;} const table=document.createElement('table'); table.innerHTML = `
-      <thead><tr><th>Titel</th><th>Info</th><th>Status</th><th>Aangemaakt</th>${owner?'<th>Acties</th>':''}</tr></thead>
-      <tbody>
-        ${mine.map(r=>`
+      const holder = $('#requestsList'); holder.innerHTML = '';
+      if(mine.length === 0){
+        holder.innerHTML = `<div class="empty">Nog geen verzoeken ${owner ? 'van gebruikers' : 'van jou'}.</div>`;
+        return;
+      }
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <thead>
           <tr>
-            <td>
-              <div style="font-weight:600;">${escapeHtml(r.title)}</div>
-              <div class="muted" style="font-size:.9rem;">${escapeHtml(r.genre)} • Prioriteit: ${escapeHtml(r.priority)}</div>
-              ${r.assets? `<div class="muted" style="font-size:.85rem;">Assets: ${linkify(escapeHtml(r.assets))}</div>`:''}
-            </td>
-            <td style="max-width:520px;">
-              <div style="white-space:pre-wrap;">${escapeHtml(r.description)}</div>
-              ${owner? `<div class="muted" style="margin-top:.3rem;">Ingediend door: ${escapeHtml(r.user)}</div>`:''}
-            </td>
-            <td>${statusPill(r.status)}</td>
-            <td><div>${fmtDate(r.createdAt)}</div>${r.updatedAt&&r.updatedAt!==r.createdAt? `<div class="muted" style="font-size:.85rem;">Geüpdatet: ${fmtDate(r.updatedAt)}</div>`:''}</td>
-            ${owner? `<td style="min-width:230px;"><div style="display:flex; flex-wrap:wrap; gap:.35rem;"><button class="btn small" onclick="changeStatus('${r.id}','pending')">In afwachting</button><button class="btn small" onclick="changeStatus('${r.id}','progress')">In behandeling</button><button class="btn small" onclick="changeStatus('${r.id}','accepted')">Geaccepteerd</button><button class="btn small danger" onclick="changeStatus('${r.id}','rejected')">Weigeren</button></div></td>`:''}
+            <th>Titel</th>
+            <th>Info</th>
+            <th>Status</th>
+            <th>Aangemaakt</th>
+            ${owner ? '<th>Acties</th>' : ''}
           </tr>
-        `).join('')}
-      </tbody>`; holder.appendChild(table);
+        </thead>
+        <tbody>
+          ${mine.map(r=>`
+            <tr>
+              <td>
+                <div style="font-weight:600;">${escapeHtml(r.title)}</div>
+                <div class="muted" style="font-size:.9rem;">${escapeHtml(r.genre)} • Prioriteit: ${escapeHtml(r.priority)}</div>
+                ${r.assets ? `<div class="muted" style="font-size:.85rem;">Assets: ${linkify(escapeHtml(r.assets))}</div>` : ''}
+              </td>
+              <td style="max-width:520px;">
+                <div style="white-space:pre-wrap;">${escapeHtml(r.description)}</div>
+                ${owner ? `<div class="muted" style="margin-top:.3rem;">Ingediend door: ${escapeHtml(r.user)}</div>` : ''}
+              </td>
+              <td>${statusPill(r.status)}</td>
+              <td>
+                <div>${fmtDate(r.createdAt)}</div>
+                ${r.updatedAt && r.updatedAt !== r.createdAt ? `<div class="muted" style="font-size:.85rem;">Geüpdatet: ${fmtDate(r.updatedAt)}</div>` : ''}
+              </td>
+              ${owner ? `
+                <td style="min-width: 230px;">
+                  <div style="display:flex; flex-wrap:wrap; gap:.35rem;">
+                    <button class="btn small" type="button" onclick="changeStatus('${r.id}','pending')">In afwachting</button>
+                    <button class="btn small" type="button" onclick="changeStatus('${r.id}','progress')">In behandeling</button>
+                    <button class="btn small" type="button" onclick="changeStatus('${r.id}','accepted')">Geaccepteerd</button>
+                    <button class="btn small danger" type="button" onclick="changeStatus('${r.id}','rejected')">Weigeren</button>
+                  </div>
+                </td>
+              ` : ''}
+            </tr>
+          `).join('')}
+        </tbody>`;
+      holder.appendChild(table);
     }
 
-    // ---------- Owner/Dev panel: user management ----------
+    /* =========================
+       Owner/Dev panel – user management
+    ==========================*/
     const ROLES = ['user','dev','owner'];
+    async function sha256(message){
+      const data = new TextEncoder().encode(message);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
     function renderUsers(){
-      const u = getCurrentUser(); const owner = isOwner(u); const panel = document.getElementById('ownerPanel');
-      panel.style.display = owner? '' : 'none'; if(!owner) return;
+      const u = getCurrentUser(); const owner = isOwner(u);
+      const panel = document.getElementById('ownerPanel');
+      panel.style.display = owner ? '' : 'none';
+      if(!owner) return;
+
       let users = getUsers();
-      users = users.sort((a,b)=>{ const rank = r=> r.role==='owner'?0 : r.role==='dev'?1 : 2; const c = rank(a)-rank(b); if(c!==0) return c; return (a.username||'').localeCompare(b.username||''); });
+      users = users.sort((a,b)=>{
+        const rank = r=> r.role==='owner'?0 : r.role==='dev'?1 : 2;
+        const c = rank(a)-rank(b); if(c!==0) return c;
+        return (a.username||'').localeCompare(b.username||'');
+      });
+
       const holder = document.getElementById('usersList');
       if(users.length===0){ holder.innerHTML = '<div class="empty">Nog geen gebruikers.</div>'; return; }
+
       const rows = users.map(x=>{
         const disabled = x.username.toLowerCase()==='bloempitbull' ? 'disabled' : '';
         const roleOptions = ROLES.map(r=> `<option value="${r}" ${x.role===r?'selected':''} ${x.username.toLowerCase()==='bloempitbull' && r!=='owner' ? 'disabled':''}>${r}</option>`).join('');
@@ -200,19 +331,20 @@
             <td>${escapeHtml(x.email||'')}</td>
             <td>
               <select id="role_${escapeHtml(x.username)}" ${disabled}>${roleOptions}</select>
-              <button class="btn small" ${disabled} onclick="applyRole('${escapeHtml(x.username)}')">Opslaan</button>
+              <button class="btn small" type="button" ${disabled} onclick="applyRole('${escapeHtml(x.username)}')">Opslaan</button>
             </td>
             <td>
               <input id="mail_${escapeHtml(x.username)}" type="email" placeholder="nieuwe e‑mail" value="${escapeHtml(x.email||'')}" />
-              <button class="btn small" onclick="applyEmail('${escapeHtml(x.username)}')">Bijwerken</button>
+              <button class="btn small" type="button" onclick="applyEmail('${escapeHtml(x.username)}')">Bijwerken</button>
             </td>
             <td>
               <input id="pass_${escapeHtml(x.username)}" type="password" placeholder="nieuw wachtwoord" />
-              <button class="btn small" onclick="resetPassword('${escapeHtml(x.username)}')">Reset</button>
+              <button class="btn small" type="button" onclick="resetPassword('${escapeHtml(x.username)}')">Reset</button>
             </td>
           </tr>
         `;
       }).join('');
+
       holder.innerHTML = `
         <table>
           <thead>
@@ -228,53 +360,69 @@
             ${rows}
           </tbody>
         </table>
-        <p class="subtle" style="margin-top:.6rem;">Om veiligheidsredenen worden bestaande wachtwoorden niet getoond. Je kan ze wel **resetten** – het nieuwe wachtwoord wordt direct gehasht en opgeslagen.</p>
+        <p class="subtle" style="margin-top:.6rem;">
+          Om veiligheidsredenen worden bestaande wachtwoorden niet getoond. Je kan ze wel <strong>resetten</strong>.
+        </p>
       `;
     }
-
     function applyRole(username){
       const cu = getCurrentUser(); if(!isOwner(cu)) return alert('Alleen owner kan rollen wijzigen.');
       const sel = document.getElementById('role_'+username);
       const users = getUsers(); const i = users.findIndex(u=> (u.username||'')===username);
       if(i<0) return;
       if(username.toLowerCase()==='bloempitbull' && sel.value!=='owner') { alert('De hoofd-owner kan niet van rol veranderen.'); renderUsers(); return; }
-      users[i].role = sel.value;
-      saveUsers(users); renderUsers(); alert('Rol bijgewerkt.');
+      users[i].role = sel.value; saveUsers(users); renderUsers(); alert('Rol bijgewerkt.');
     }
-
     function applyEmail(username){
       const cu=getCurrentUser(); if(!isOwner(cu)) return alert('Alleen owner kan e‑mail wijzigen.');
       const inp = document.getElementById('mail_'+username);
       const email = inp.value.trim();
       if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert('Ongeldig e‑mailadres.'); return; }
       const users = getUsers(); const i = users.findIndex(u=> (u.username||'')===username);
-      if(i<0) return;
-      users[i].email = email; saveUsers(users); renderUsers(); alert('E‑mail bijgewerkt.');
+      if(i<0) return; users[i].email = email; saveUsers(users); renderUsers(); alert('E‑mail bijgewerkt.');
     }
-
-    async function sha256(message){ const data = new TextEncoder().encode(message); const digest = await crypto.subtle.digest('SHA-256', data); return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join(''); }
-
     async function resetPassword(username){
       const cu=getCurrentUser(); if(!isOwner(cu)) return alert('Alleen owner kan wachtwoorden resetten.');
       const inp = document.getElementById('pass_'+username);
-      const newp = inp.value; if(!newp || newp.length<8){ alert('Nieuw wachtwoord moet minstens 8 tekens zijn.'); return; }
+      const newp = inp.value;
+      if(!newp || newp.length<8){ alert('Nieuw wachtwoord moet minstens 8 tekens zijn.'); return; }
       const users = getUsers(); const i = users.findIndex(u=> (u.username||'')===username);
       if(i<0) return; users[i].passwordHash = await sha256(newp); saveUsers(users); inp.value=''; alert('Wachtwoord gereset.');
     }
 
-    function render(){
-      const u = getCurrentUser(); const owner = isOwner(u);
-      document.getElementById('currentUserInfo').textContent = u? `Ingelogd als ${u}${owner?' (owner)':''}` : '';
-      renderRequests(); renderUsers();
-      const start = 2025; const y = new Date().getFullYear(); const yr = y>start? `${start}-${y}` : `${start}`;
-      document.getElementById('footerText').textContent = `All rights reserved  Bloempitbull Studio ${yr} © - Made by Bloempitbull :)`;
-    }
+    /* =========================
+       Init & Event binding (robust)
+    ==========================*/
+    document.addEventListener('DOMContentLoaded', () => {
+      // Buttons
+      document.getElementById('submitRequestBtn')?.addEventListener('click', submitRequest);
 
-    document.getElementById('submitRequestBtn').addEventListener('click', submitRequest);
-    document.getElementById('logoutBtn').addEventListener('click', ()=>{ setCurrentUser(''); window.location.href='index.html'; });
-    document.getElementById('toIndexBtn').addEventListener('click', ()=>{ window.location.href='index.html'; });
+      // Afmelden – wis loginstatus en ga terug (replace = geen “Terug” naar beschermde pagina)
+      document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.setItem('currentUser', '');
+        window.location.replace('index.html');
+      });
 
-    (function(){ if(!requireLogin()) return; render(); })();
+      // Start – terug naar index
+      document.getElementById('toIndexBtn')?.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+
+      // Auth check + render
+      if(!requireLogin()) return;
+      const u = getCurrentUser();
+      const owner = isOwner(u);
+      document.getElementById('currentUserInfo').textContent = u ? `Ingelogd als ${u}${owner?' (owner)':''}` : '';
+
+      renderRequests();
+      renderUsers();
+
+      // Footer jaartallen
+      const start = 2025; const y = new Date().getFullYear();
+      const yr = y>start ? `${start}-${y}` : `${start}`;
+      document.getElementById('footerText').textContent =
+        `All rights reserved  Bloempitbull Studio ${yr} © - Made by Bloempitbull :)`;
+    });
   </script>
 </body>
 </html>
