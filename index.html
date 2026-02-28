@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roblox Game Portal</title>
+  <!-- Favicon & app icons -->
+  <link rel="icon" type="image/png" href="favicon.png" sizes="256x256">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#0f0c29" />
+
+  <style>
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff; margin:0; min-height:100vh; display:grid; grid-template-rows:auto 1fr auto;
+    }
+    @keyframes gradientBG { 0%{background-position:0 50%} 50%{background-position:100% 50%} 100%{background-position:0 50%} }
+    .container{ text-align:center; padding:48px; }
+    .btn{
+      display:block; width:260px; margin:12px auto; padding:14px 16px;
+      border:none; border-radius:10px; cursor:pointer; font-weight:700; transition:.2s;
+      background:#00ff88; color:#0b1220; box-shadow:0 0 12px #00ff88;
+    }
+    .btn:hover{ background:#00d173; box-shadow:0 0 18px #00ff88; transform: translateY(-1px); }
+    .muted{ color:#cbd5e1; }
+    /* Modal */
+    .modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:1000; place-items:center; padding:16px; }
+    .modal.open{ display:grid; }
+    .card{
+      width:min(360px, 92vw); background:#fff; color:#0b1220; border-radius:14px; padding:18px 18px 20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    .card h2{ margin:.25rem 0 .75rem; }
+    .field{ margin:.5rem 0; }
+    input{
+      width:100%; padding:10px 12px; border-radius:9px; border:1px solid #d1d5db; outline:none;
+    }
+    input:focus{ border-color:#7c3aed; box-shadow:0 0 0 3px rgba(124,58,237,.18); }
+    .actions{ display:flex; gap:.5rem; align-items:center; margin-top:.5rem; }
+    .small{ font-size:.9rem; }
+    footer{ text-align:center; color:#cbd5e1; font-size:.9rem; padding:14px 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎮 Bloempitbull Studio</h1>
+    <p class="muted">Log in of maak een account aan. Na inloggen ga je naar de aanvraagpagina.</p>
+    <button class="btn" onclick="openModal('loginModal')">🔐 Inloggen</button>
+    <button class="btn" onclick="openModal('registerModal')">📝 Registreren</button>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal" aria-hidden="true" role="dialog">
+    <div class="card">
+      <h2>Inloggen</h2>
+      <div class="field"><input id="loginUser" type="text" placeholder="Gebruikersnaam" autocomplete="username"></div>
+      <div class="field"><input id="loginPass" type="password" placeholder="Wachtwoord" autocomplete="current-password"></div>
+      <div class="actions">
+        <button class="btn" onclick="login()">Inloggen</button>
+        <span id="loginMsg" class="small"></span>
+      </div>
+      <div class="actions"><button class="btn" style="background:#e2e8f0;color:#0b1220" onclick="closeModal('loginModal')">Sluiten</button></div>
+    </div>
+  </div>
+
+  <!-- Register Modal -->
+  <div id="registerModal" class="modal" aria-hidden="true" role="dialog">
+    <div class="card">
+      <h2>Registreren</h2>
+      <div class="field"><input id="regUser" type="text" placeholder="Gebruikersnaam" autocomplete="username"></div>
+      <div class="field"><input id="regPass" type="password" placeholder="Wachtwoord (min. 8 tekens)" autocomplete="new-password"></div>
+      <div class="field"><input id="regPass2" type="password" placeholder="Bevestig wachtwoord" autocomplete="new-password"></div>
+      <div class="actions">
+        <button class="btn" onclick="registerUser()">Registreren</button>
+        <span id="regMsg" class="small"></span>
+      </div>
+      <div class="actions"><button class="btn" style="background:#e2e8f0;color:#0b1220" onclick="closeModal('registerModal')">Sluiten</button></div>
+    </div>
+  </div>
+
+  <footer>
+    <span id="footerText"></span>
+  </footer>
+
+  <script>
+    // ---------- Helpers ----------
+    const $ = s => document.querySelector(s);
+    const usersKey = 'users';
+    const currentUserKey = 'currentUser';
+
+    function openModal(id){ document.getElementById(id).classList.add('open'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+    function loadUsers(){
+      try { return JSON.parse(localStorage.getItem(usersKey) || '[]'); } catch { return []; }
+    }
+    function saveUsers(list){ localStorage.setItem(usersKey, JSON.stringify(list)); }
+    function setCurrentUser(u){ localStorage.setItem(currentUserKey, u || ''); }
+    function getCurrentUser(){ return localStorage.getItem(currentUserKey) || ''; }
+    function isOwner(username){ return username && username.toLowerCase() === 'bloempitbull'; }
+
+    async function sha256(message){
+      const data = new TextEncoder().encode(message);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // Owner-account toevoegen als hij nog niet bestaat
+    async function ensureOwner(){
+      const users = loadUsers();
+      const exists = users.some(u => u.username.toLowerCase() === 'bloempitbull');
+      if(!exists){
+        users.push({
+          username: 'Bloempitbull',
+          passwordHash: await sha256('Bloempitbull.'),
+          role: 'owner',
+          createdAt: new Date().toISOString()
+        });
+        saveUsers(users);
+        console.log('Owner-account toegevoegd.');
+      }
+    }
+
+    async function registerUser(){
+      const u = document.getElementById('regUser').value.trim();
+      const p1 = document.getElementById('regPass').value;
+      const p2 = document.getElementById('regPass2').value;
+      const msg = document.getElementById('regMsg');
+      msg.textContent = '';
+
+      if(!u || !p1 || !p2){ msg.textContent = '❌ Vul alles in.'; return; }
+      if(p1 !== p2){ msg.textContent = '❌ Wachtwoorden komen niet overeen.'; return; }
+      if(p1.length < 8){ msg.textContent = '❌ Minstens 8 tekens.'; return; }
+      if(!/^[a-zA-Z0-9._-]{3,20}$/.test(u)){ msg.textContent = '❌ 3–20 tekens (letters/cijfers/._-).'; return; }
+
+      const users = loadUsers();
+      if(users.some(x => x.username.toLowerCase() === u.toLowerCase())){
+        msg.textContent = '❌ Gebruikersnaam bestaat al.'; return;
+      }
+      const passwordHash = await sha256(p1);
+      users.push({ username: u, passwordHash, role: 'user', createdAt: new Date().toISOString() });
+      saveUsers(users);
+      msg.textContent = '✅ Registratie gelukt! Je kan nu inloggen.';
+      document.getElementById('loginUser').value = u; document.getElementById('loginPass').value = '';
+    }
+
+    async function login(){
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value;
+      const msg = document.getElementById('loginMsg');
+      msg.textContent = '';
+
+      const users = loadUsers();
+      const user = users.find(x => x.username.toLowerCase() === u.toLowerCase());
+      if(!user){ msg.textContent = '❌ Onbekende gebruiker.'; return; }
+      const hash = await sha256(p);
+      if(hash !== user.passwordHash){ msg.textContent = '❌ Onjuist wachtwoord.'; return; }
+
+      setCurrentUser(user.username);
+      window.location.href = 'aanvraag.html';
+    }
+
+    // Init + dynamische footer
+    (async function(){
+      await ensureOwner();
+      const u = getCurrentUser();
+      if(u){ window.location.href = 'aanvraag.html'; }
+      const start = 2025; const y = new Date().getFullYear();
+      const yr = y>start ? `${start}-${y}` : `${start}`;
+      document.getElementById('footerText').textContent = `All rights reserved  Bloempitbull Studio ${yr} © - Made by Bloempitbull :)`;
+    })();
+  </script>
+</body>
+</html>
